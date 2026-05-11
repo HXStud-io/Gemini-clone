@@ -6,7 +6,7 @@ import { useContext } from 'react'
 
 const Main = ()=>{
 
-    const {onSent,recentPrompt,showResult,loading,resultData,setInput,input} = useContext(AiContext)
+    const {setPrevPrompt,onSent,recentPrompt,showResult,loading,resultData,setInput,input} = useContext(AiContext)
 
     return(
         <>
@@ -69,7 +69,10 @@ const Main = ()=>{
                             <img src={assets.gallery_icon} />
                             <img src={assets.mic_icon} />
                             <img 
-                            onClick={()=>{onSent(input)}}
+                            onClick={() =>{
+                               (input.trim() !== "")?onSent(input): ""; 
+                              (input.trim() !== "")?setPrevPrompt(prev=>[...prev,input]): "";
+                            }}
                             src={assets.send_icon} />
                         </div>
                     </div>

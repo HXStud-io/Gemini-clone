@@ -161,6 +161,7 @@
 }
 
 .loader hr{
+    height: 20px;
     border-radius: 4px;
     border: none;
     background-color: #f6f7f8;
@@ -200,4 +201,5 @@
         font-size: 16px;   
         width: 100px;     
     }
+    
 }

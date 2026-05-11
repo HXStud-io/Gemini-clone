@@ -7,7 +7,7 @@ export const AiContext = createContext()
 const AiContextProvider = (props)=>{
     const [input,setInput] = useState("")
     const [recentPrompt,setRecentPrompt] = useState("")
-    const [prevPrompt,setPreviousPrompt] = useState([])
+    const [prevPrompt,setPrevPrompt] = useState([])
     const [showResult, setShowResult] = useState(true)
     const [loading, setLoading] = useState(false)
     const [resultData , setResultData] = useState("")
@@ -19,39 +19,43 @@ const AiContextProvider = (props)=>{
     }
 
     const onSent = async(prompt)=>{
-        console.log("...procesing")
-        setResultData("")
-        setLoading(true)
         setShowResult(false)
-        let resp;
-        if(prompt !== undefined){
-            setRecentPrompt(prompt)
-            resp = await runChat(prompt)
+        setLoading(true)
+        setResultData("")
+            let response;
+            if (prompt !== undefined) {
+            setRecentPrompt(prompt);            
+            response = await runChat(prompt);
+        } else {
+            
+            if (!input.trim()) {
+                setLoading(false);
+                setShowResult(true);
+                return;
+            } 
+            setRecentPrompt(input);
+            response = await runChat(input);
         }
-        else{
-            setPreviousPrompt(prev => [...prev,input])
-            setRecentPrompt(input)
-            resp = await runChat(input)
-        }
-        let respArr = resp.split("**")
-        let newResp = "";
-        for(let i=0; i< respArr.length; i++){
-            if(i === 0 || i%2 !== 1){
-                newResp += respArr[i];
+
+
+        let responseArray = response.split("**");
+        let newResponse = "";
+        for (let i = 0; i < responseArray.length; i++) {
+            if (i === 0 || i % 2 !== 1) {
+                newResponse += responseArray[i];
+            } else {
+                newResponse += "<b>" + responseArray[i] + "</b>";
             }
-            else{
-                newResp += "<b>"+respArr[i]+"</b>"
-            }
         }
-        newResp = newResp.split(/[###*]/).join("</br>")
-        let newRespArr = newResp.split(" ")
-        for(let i=0; i< newRespArr.length;i++){
-            const nextWord = newRespArr[i]
-            delayParas(i,nextWord+" ")
+        let newResponse2 = newResponse.split("###").join("<br/>");
+        let newResponseArray = newResponse2.split(" ");
+        for (let i = 0; i < newResponseArray.length; i++) {
+            const nextWord = newResponseArray[i];
+            delayParas(i, nextWord + " ");
         }
-        setLoading(false)
-        setInput("")
-        console.log("...finish")
+        setLoading(false);
+        setInput("");
+            
     }
     
     const contextVal = {
@@ -61,10 +65,13 @@ const AiContextProvider = (props)=>{
         input,
         setInput,
         loading,
+        setLoading,
+        setShowResult,
         resultData,
         showResult,
         loading,
-        setRecentPrompt
+        setRecentPrompt,
+        setPrevPrompt
     }
 
 

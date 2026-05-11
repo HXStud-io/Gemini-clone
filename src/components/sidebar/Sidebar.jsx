@@ -6,14 +6,14 @@ import { AiContext } from '../context/AiContextProvider'
 const Sidebar = ( )=>{
 
     const [extended, setExtended] = useState(false);
-    const {prevPrompt, onSent, setRecentPrompt} = useContext(AiContext)
+    const {prevPrompt, onSent, setRecentPrompt, setLoading, setShowResult} = useContext(AiContext)
     const loadPrompt = async (prompt)=>{
-        setRecentPrompt(prompt)
+        setRecentPrompt(prompt)    
         await onSent(prompt)
     }
     const newChat = () => {
         setLoading(false)
-        setShowResult(false)
+        setShowResult(true)
     }
 
     return(
@@ -22,7 +22,7 @@ const Sidebar = ( )=>{
             <div className="top">
                 <img className="menu" src={assets.menu_icon} alt="" onClick={(e)=>{setExtended(prev => !prev)}} />
                 
-                <div className="newchat">
+                <div className="newchat" onClick={newChat}>
                     <img src={assets.plus_icon} alt=""/>
                     {extended && (<p>New Chat</p>)}
                 </div>
@@ -32,7 +32,7 @@ const Sidebar = ( )=>{
                     {prevPrompt.map((item,index)=>(
                     <div className="recent-entry" key={index} onClick={()=>{loadPrompt(item)}}>
                         <img src={assets.message_icon}  alt="" />
-                        <p>{item.slice(0,18)}</p>
+                        <p>{item.slice(0,18)}...</p>
                     </div>
                     ))}   
                 </div>
